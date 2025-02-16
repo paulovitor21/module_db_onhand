@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from scripts.models import OnhandRecord
 import logging
 
-def save_to_db(df_onhand, db: Session, file_date):
+def save_to_db(df_onhand, db: Session, plan_date):
     """
     Saves records to the database using ORM.
     Processes all records, but only non-duplicate records will be inserted into the database.
@@ -15,10 +15,10 @@ def save_to_db(df_onhand, db: Session, file_date):
     # Convert all columns to string
     df_onhand = df_onhand.astype(str)
     # Check if records already exist in the database for the same file date
-    existing_records = db.query(OnhandRecord).filter_by(file_date=file_date).first()
+    existing_records = db.query(OnhandRecord).filter_by(plan_date=plan_date).first()
     
     if existing_records:
-        logging.info(f"[Ignored] Records for the date {file_date} already exist in the database. No records were inserted.")
+        logging.info(f"[Ignored] Records for the date {plan_date} already exist in the database. No records were inserted.")
         return False  # No data was inserted
     
     # Insert the records, as there are no records for the file date
@@ -27,7 +27,7 @@ def save_to_db(df_onhand, db: Session, file_date):
     for _, row in df_onhand.iterrows():
         
         record = OnhandRecord(
-            file_date = file_date,
+            plan_date = plan_date,
             org = row['org'],
             item = row['item'],
             uit = row['uit'],
@@ -56,6 +56,6 @@ def save_to_db(df_onhand, db: Session, file_date):
     # Commit to the database
     db.commit()
     # Display success message only if records were inserted
-    logging.info(f"[Inserted] Total records inserted for the date {file_date}: {inserted_count}.")
+    logging.info(f"[Inserted] Total records inserted for the date {plan_date}: {inserted_count}.")
     logging.info("Data saved successfully!")
     return True

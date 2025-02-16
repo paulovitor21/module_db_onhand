@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, DOUBLE_PRECISION, String, Date
+from sqlalchemy import Column, Integer, String, TIMESTAMP
 
 Base = declarative_base()
 
@@ -8,7 +8,7 @@ class OnhandRecord(Base):
     __tablename__= 'table_onhand'
 
     id = Column(Integer, primary_key=True, index=True)
-    file_date = Column(name="file_date", type_=Date)
+    plan_date = Column(name="plan_date", type_=TIMESTAMP)
     org = Column(name='org', type_=String)
     item = Column(name='item', type_=String)
     uit = Column(name='uit', type_=String)
